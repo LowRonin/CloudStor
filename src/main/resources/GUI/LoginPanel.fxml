@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="180.0" prefWidth="360.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.GUI">
+   <children>
+      <PasswordField layoutX="31.0" layoutY="100.0" prefHeight="30.0" text="Пароль" AnchorPane.bottomAnchor="53.0" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="102.0" />
+      <TextField layoutX="31.0" layoutY="50.0" prefHeight="30.0" text="Логин" AnchorPane.bottomAnchor="103.0" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="52.0" />
+      <Button layoutX="209.0" layoutY="100.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" text="Выйти" />
+      <Button layoutX="209.0" layoutY="50.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="120.0" text="Войти" />
+      <Label layoutX="30.0" layoutY="15.0" prefHeight="30.0" prefWidth="155.0" text="Авторизация">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
