@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.GUI">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+        prefHeight="800.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.GUI">
    <children>
-      <ProgressBar layoutX="202.0" layoutY="396.0" prefHeight="5.0" prefWidth="399.0" progress="0.0" />
-      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="601.0">
+      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1170.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -28,5 +33,21 @@
           </Menu>
         </menus>
       </MenuBar>
+      <Button fx:id="downloadBT" layoutX="545.0" layoutY="298.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="Скачать&gt;" />
+      <Button fx:id="uploadBT" layoutX="545.0" layoutY="341.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="80.0" text="&lt;Загрузить" />
+      <ProgressBar fx:id="serverPB" layoutY="807.0" prefHeight="10.0" prefWidth="540.0" progress="0.0" />
+      <ProgressBar fx:id="clientPB" layoutX="630.0" layoutY="807.0" prefHeight="10.0" prefWidth="540.0" progress="0.0" />
+      <Pane fx:id="serverPane" layoutY="27.0" prefHeight="780.0" prefWidth="540.0" style="-fx-background-color: cccccc;">
+         <children>
+            <TextField fx:id="serverPath" prefHeight="25.0" prefWidth="540.0" text="Адрес сервер" />
+            <TreeView fx:id="serverTree" layoutY="25.0" prefHeight="755.0" prefWidth="540.0" />
+         </children>
+      </Pane>
+      <Pane fx:id="clientPane" layoutX="630.0" layoutY="27.0" prefHeight="780.0" prefWidth="540.0" style="-fx-background-color: cccccc;">
+         <children>
+            <TreeView fx:id="clientTree" layoutY="25.0" prefHeight="755.0" prefWidth="540.0" />
+            <TextField fx:id="clientPath" prefHeight="25.0" prefWidth="540.0" text="Адрес Клиент" />
+         </children>
+      </Pane>
    </children>
 </AnchorPane>
