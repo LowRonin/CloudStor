@@ -1,7 +1,6 @@
 package Client;
 
 
-import Server.SvrConst;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -11,8 +10,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 
@@ -31,7 +32,7 @@ public class Client extends Application {
     public ListView srvView;
 
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
         open_connection();
         launch(args);
     }
@@ -45,7 +46,7 @@ public class Client extends Application {
     }
 
 
-    private static void open_connection(){
+    private static void open_connection() {
         try {
             socket = new Socket("localhost", 35666);
         } catch (IOException e) {
@@ -61,46 +62,57 @@ public class Client extends Application {
 
     public synchronized void upload(ActionEvent actionEvent) throws IOException {
         oS.writeUTF("/upload");
-            FileInputStream fIS = null;
+        FileInputStream fIS = null;
+        try {
+            fIS = new FileInputStream(ClientConst.CLIENT_DIR_PATH.toFile());
+        } catch (FileNotFoundException e) {
+            System.out.println("Path not found");
+            e.printStackTrace();
+        }
+        try {
+            int count = fIS.available();
+            while ((fIS.available()) > 0) {
+                fIS.read(clientBuffer, 0, count);
+                oS.write(clientBuffer, 0, count);
+                oS.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void download(ActionEvent actionEvent) throws IOException {
+        oS.writeUTF("/download");
+        {
+            FileOutputStream fOS = null;
             try {
-                fIS = new FileInputStream(ClientConst.CLIENT_DIR_PATH.toFile());
+                fOS = new FileOutputStream(ClientConst.CLIENT_DIR_PATH.toFile());
             } catch (FileNotFoundException e) {
                 System.out.println("Path not found");
                 e.printStackTrace();
             }
             try {
-                int count = fIS.available();
-                while ((fIS.available()) > 0) {
-                    fIS.read(clientBuffer, 0, count);
-                    oS.write(clientBuffer, 0, count);
-                    oS.flush();
+                int count = iS.available();
+                while ((iS.available()) > 0) {
+                    iS.read(clientBuffer, 0, count);
+                    fOS.write(clientBuffer, 0, count);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
 
-    public synchronized void download(ActionEvent actionEvent) {
-        while (true) {
-            {
-                FileOutputStream fOS = null;
-                try {
-                    fOS = new FileOutputStream(SvrConst.SRV_DIR_PATH.toFile());
-                } catch (FileNotFoundException e) {
-                    System.out.println("Path not found");
-                    e.printStackTrace();
-                }
-                try {
-                    int count = iS.available();
-                    while ((iS.available()) > 0) {
-                        iS.read(clientBuffer, 0, count);
-                        fOS.write(clientBuffer, 0, count);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                break;
-            }
+    public void update(ActionEvent actionEvent) {
+        try {
+            clientView.getItems().clear();
+            Files.list(ClientConst.CLIENT_DIR_PATH)
+                    .map(p -> p.getFileName().toString())
+                    .forEach(f -> clientView.getItems().add(f));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        srvView.getItems().clear();
+
     }
 }

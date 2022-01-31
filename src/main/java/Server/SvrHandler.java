@@ -1,7 +1,5 @@
 package Server;
 
-import Client.ClientConst;
-
 import java.io.*;
 import java.net.Socket;
 
@@ -22,17 +20,17 @@ public class SvrHandler implements Runnable {
 
     @Override
     public void run() {
-
         try {
             while (true) {
-                if (iS.readUTF().equals("/upload")) {
-                    try {
-                        file_catcher(svrBuffer);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                String command = iS.readUTF();
+                if (command.equals("/upload")) {
+                    System.out.println(command);
+                    file_catcher(svrBuffer);
                 }
-
+                if (command.equals("/download")) {
+                    System.out.println(command);
+                    file_pitcher(svrBuffer);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -42,35 +40,28 @@ public class SvrHandler implements Runnable {
     }
 
     public synchronized void file_catcher(byte[] buffer) throws IOException {
-        while (true) {
-            {
-                FileOutputStream fOS = null;
-                try {
-                    fOS = new FileOutputStream(SvrConst.SRV_DIR_PATH.toFile());
-                } catch (FileNotFoundException e) {
-                    System.out.println("Path not found");
-                    e.printStackTrace();
-                }
-                try {
-                    int count = iS.available();
-                    while ((iS.available()) > 0) {
-                        iS.read(buffer, 0, count);
-                        fOS.write(buffer, 0, count);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                break;
-            }
+        FileOutputStream fOS = null;
+        try {
+            fOS = new FileOutputStream(SvrConst.SRV_DIR_PATH.toFile());
+        } catch (FileNotFoundException e) {
+            System.out.println("Path not found");
+            e.printStackTrace();
         }
-
+        try {
+            int count = iS.available();
+            while ((iS.available()) > 0) {
+                iS.read(buffer, 0, count);
+                fOS.write(buffer, 0, count);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public synchronized void file_pitcher(byte[] buffer) throws IOException {
-        oS.writeUTF("/upload");
         FileInputStream fIS = null;
         try {
-            fIS = new FileInputStream(ClientConst.CLIENT_DIR_PATH.toFile());
+            fIS = new FileInputStream(SvrConst.SRV_DIR_PATH.toFile());
         } catch (FileNotFoundException e) {
             System.out.println("Path not found");
             e.printStackTrace();
@@ -86,8 +77,12 @@ public class SvrHandler implements Runnable {
             e.printStackTrace();
         }
     }
-    
-    public void closeConnection(){
+
+    public synchronized void file_updater(){
+
+    }
+
+    public void closeConnection() {
         try {
             iS.close();
         } catch (IOException e) {

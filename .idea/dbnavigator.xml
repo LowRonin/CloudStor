@@ -69,7 +69,7 @@
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection id="668eebd6-5984-4699-951c-21a02d5db6fb" active="true">
+      <connection id="668eebd6-5984-4699-951c-21a02d5db6fb" active="true" signed="true">
         <database>
           <name value="CloudDB" />
           <description value="" />
