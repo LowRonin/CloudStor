@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="180.0" prefWidth="360.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.GUI">
+<AnchorPane prefHeight="180.0" prefWidth="360.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.Client">
    <children>
       <PasswordField layoutX="31.0" layoutY="100.0" prefHeight="30.0" text="Пароль" AnchorPane.bottomAnchor="53.0" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="102.0" />
       <TextField layoutX="31.0" layoutY="50.0" prefHeight="30.0" text="Логин" AnchorPane.bottomAnchor="103.0" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="52.0" />

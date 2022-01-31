@@ -17,8 +17,11 @@ public class CloudSvr {
         while (true) {
             socket = server.accept();
             System.out.println("New client connection...");
-            new Thread(new SvrHandler(socket)).start();
+            try {
+                new Thread(new SvrHandler(socket)).start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
     }
 }

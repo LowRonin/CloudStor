@@ -1,72 +1,102 @@
 package Server;
 
+import Client.ClientConst;
+
 import java.io.*;
 import java.net.Socket;
 
 
 public class SvrHandler implements Runnable {
-    private InputStream iS = null;
-    private FileOutputStream fOS = null;
+    private DataInputStream iS = null;
+    private DataOutputStream oS = null;
     private byte[] svrBuffer = new byte[8192];
 
     public SvrHandler(Socket socket) {
         try {
-            iS = socket.getInputStream();
-            fOS = new FileOutputStream(SvrConst.SRV_DIR_PATH.toFile());
+            iS = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+            oS = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
         } catch (IOException e) {
             e.printStackTrace();
         }
-//        finally {
-//            try {
-//                socket.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            try {
-//                iS.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            try {
-//                fOS.close();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-
-
-}
+    }
 
     @Override
     public void run() {
-        while (true) {
-            file_catcher(svrBuffer, iS);
+
+        try {
+            while (true) {
+                if (iS.readUTF().equals("/upload")) {
+                    try {
+                        file_catcher(svrBuffer);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            closeConnection();
         }
     }
 
-    public void file_catcher(byte[] buffer, InputStream iS) {
+    public synchronized void file_catcher(byte[] buffer) throws IOException {
+        while (true) {
+            {
+                FileOutputStream fOS = null;
+                try {
+                    fOS = new FileOutputStream(SvrConst.SRV_DIR_PATH.toFile());
+                } catch (FileNotFoundException e) {
+                    System.out.println("Path not found");
+                    e.printStackTrace();
+                }
+                try {
+                    int count = iS.available();
+                    while ((iS.available()) > 0) {
+                        iS.read(buffer, 0, count);
+                        fOS.write(buffer, 0, count);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
 
-        FileOutputStream fOS = null;
+    }
+
+    public synchronized void file_pitcher(byte[] buffer) throws IOException {
+        oS.writeUTF("/upload");
+        FileInputStream fIS = null;
         try {
-            fOS = new FileOutputStream(SvrConst.SRV_DIR_PATH.toFile());
+            fIS = new FileInputStream(ClientConst.CLIENT_DIR_PATH.toFile());
         } catch (FileNotFoundException e) {
             System.out.println("Path not found");
             e.printStackTrace();
         }
         try {
-            int count = buffer.length;
-            while ((iS.available()) > 0) {
-                iS.read(buffer,0,count);
-                byte[] a = buffer;
-                fOS.write(buffer, 0, count);
+            int count = fIS.available();
+            while ((fIS.available()) > 0) {
+                fIS.read(buffer, 0, count);
+                oS.write(buffer, 0, count);
+                oS.flush();
             }
-            System.out.println("File catch");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
-
-    public void file_pitcher() {
+    
+    public void closeConnection(){
+        try {
+            iS.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            oS.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
