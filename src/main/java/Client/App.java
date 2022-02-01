@@ -1,4 +1,4 @@
-package GUI;
+package Client;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,16 +8,16 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class GUI extends Application {
+public class App extends Application {
+
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-
-        Parent parent = FXMLLoader.load(getClass().getResource("/GUI/LoginPanel.fxml"));
-        primaryStage.setScene(new Scene(parent));
-        primaryStage.show();
+            Parent parent = FXMLLoader.load(getClass().getResource("/GUI/WorkingPanel.fxml"));
+            primaryStage.setScene(new Scene(parent));
+            primaryStage.show();
+        }
     }
-}
