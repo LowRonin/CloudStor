@@ -2,17 +2,27 @@ package Server;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class SvrHandler implements Runnable {
     private DataInputStream iS = null;
     private DataOutputStream oS = null;
-    private byte[] svrBuffer = new byte[8192];
+    private final byte[] svrBuffer = new byte[8192];
+    private Path dir = SvrConst.DEFAULT_DIR_PATH;
+    String command = null;
 
+    // FIXME: 01.02.2022 Сделать кнопки неактивными до завершения оперции
+    // FIXME: 01.02.2022 Добавить кнопку удаления Files.delete()
+    // FIXME: 01.02.2022 Переделать через socketChanel
     public SvrHandler(Socket socket) {
         try {
-            iS = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-            oS = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+            iS = new DataInputStream(socket.getInputStream());
+            oS = new DataOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -22,30 +32,39 @@ public class SvrHandler implements Runnable {
     public void run() {
         try {
             while (true) {
-                String command = iS.readUTF();
+                command = iS.readUTF();
                 if (command.equals("/upload")) {
-                    System.out.println(command);
-                    file_catcher(svrBuffer);
+                    download(svrBuffer);
                 }
                 if (command.equals("/download")) {
-                    System.out.println(command);
-                    file_pitcher(svrBuffer);
+                    upload(svrBuffer);
+                }
+                if (command.equals("/update")) {
+                    update();
+                }
+                if (command.equals("/fillPath")){
+                    fillPath();
+                }
+                if (command.equals("/setPath")){
+                    setPath();
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            closeConnection();
         }
     }
 
-    public synchronized void file_catcher(byte[] buffer) throws IOException {
+    public synchronized void download(byte[] buffer) {
         FileOutputStream fOS = null;
         try {
-            fOS = new FileOutputStream(SvrConst.SRV_DIR_PATH.toFile());
+            String fileName = iS.readUTF();
+            fOS = new FileOutputStream(dir.resolve(fileName).toFile());
         } catch (FileNotFoundException e) {
             System.out.println("Path not found");
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("File name lose");
         }
         try {
             int count = iS.available();
@@ -56,17 +75,20 @@ public class SvrHandler implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println(command);
     }
 
-    public synchronized void file_pitcher(byte[] buffer) throws IOException {
+    public synchronized void upload(byte[] buffer) throws IOException {
         FileInputStream fIS = null;
         try {
-            fIS = new FileInputStream(SvrConst.SRV_DIR_PATH.toFile());
+            String fileName = iS.readUTF();
+            fIS = new FileInputStream(dir.resolve(fileName).toFile());
         } catch (FileNotFoundException e) {
             System.out.println("Path not found");
             e.printStackTrace();
         }
         try {
+            assert fIS != null;
             int count = fIS.available();
             while ((fIS.available()) > 0) {
                 fIS.read(buffer, 0, count);
@@ -76,22 +98,39 @@ public class SvrHandler implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println(command);
     }
 
-    public synchronized void file_updater(){
-
-    }
-
-    public void closeConnection() {
+    public synchronized void update() {
         try {
-            iS.close();
+            List<String> files = Files.list(dir)
+                    .map(path -> path.getFileName().toString())
+                    .collect(Collectors.toList());
+            oS.writeInt(files.size());
+            for (String file : files) {
+                oS.writeUTF(file);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println(command);
+    }
+
+    public void fillPath() {
         try {
-            oS.close();
+            oS.writeUTF(String.valueOf(dir));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    public void setPath(){
+        try {
+            dir = Paths.get(iS.readUTF());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println(command);
+    }
+
 }

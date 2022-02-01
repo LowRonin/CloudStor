@@ -10,6 +10,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="818.0" prefWidth="1170.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Client.Client">
    <children>
@@ -36,29 +37,32 @@
       <Button layoutX="545.0" layoutY="341.0" mnemonicParsing="false" onAction="#upload" prefHeight="25.0" prefWidth="80.0" text="&lt;Загрузить" />
       <Pane fx:id="serverPane" layoutY="27.0" prefHeight="791.0" prefWidth="540.0" style="-fx-background-color: cccccc;">
          <children>
-            <TextField fx:id="serverPath" prefHeight="25.0" prefWidth="540.0" text="Адрес сервер">
-               <padding>
-                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-               </padding></TextField>
+            <TextField fx:id="serverPath" onAction="#setSvrPath" layoutX="6.0" prefHeight="26.0" prefWidth="474.0" text="Адрес сервер" />
             <ListView fx:id="srvView" layoutX="6.0" layoutY="29.0" maxHeight="1920.0" maxWidth="1920.0" prefHeight="749.0" prefWidth="528.0">
                <padding>
                   <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                </padding>
             </ListView>
             <ProgressBar fx:id="serverPB" layoutX="5.0" layoutY="779.0" prefHeight="10.0" prefWidth="530.0" progress="0.0" />
+            <Button onAction="#svrBackPath" layoutX="481.0" minWidth="45.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="45.0" text="&lt;" />
          </children>
       </Pane>
       <Pane fx:id="clientPane" layoutX="630.0" layoutY="27.0" prefHeight="791.0" prefWidth="540.0" style="-fx-background-color: cccccc;">
          <children>
-            <TextField fx:id="clientPath" prefHeight="25.0" prefWidth="540.0" text="Адрес Клиент" />
+            <TextField fx:id="clientPath" layoutX="6.0" onAction="#setClientPath" prefHeight="26.0" prefWidth="474.0" text="Адрес Клиент" />
             <ListView fx:id="clientView" layoutX="6.0" layoutY="29.0" maxHeight="1920.0" maxWidth="1920.0" prefHeight="749.0" prefWidth="528.0">
                <padding>
                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                </padding>
             </ListView>
             <ProgressBar fx:id="clientPB" layoutX="5.0" layoutY="779.0" prefHeight="10.0" prefWidth="530.0" progress="0.0" />
+            <Button onAction="#clientBackPath" contentDisplay="CENTER" graphicTextGap="1.0" layoutX="481.0" layoutY="-1.0" minHeight="0.0" minWidth="53.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="53.0" text="&lt;" textAlignment="CENTER">
+               <font>
+                  <Font size="1.0" />
+               </font>
+            </Button>
          </children>
       </Pane>
-      <Button onAction="#update" layoutX="540.0" layoutY="27.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="90.0" text="Обновить" />
+      <Button layoutX="540.0" layoutY="27.0" mnemonicParsing="false" onAction="#update" prefHeight="26.0" prefWidth="90.0" text="Обновить" />
    </children>
 </AnchorPane>
